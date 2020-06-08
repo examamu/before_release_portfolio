@@ -1,3 +1,8 @@
+<?php
+
+    $items = \DB::table('staff')->get();
+?>
+
 <!DOCTYPE html>
 <html lang = "ja">
 <head>
@@ -27,7 +32,8 @@
                     <tr>
                         <th>時間</th>
                         <th>名前</th>
-                        <th>備考の有無</th>
+                        <th>伝達事項</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +41,7 @@
                     <tr>
                         <td>11:00</td>
                         <td>〇〇さん</td>
-                        <td>備考欄を確認してください</td>
+                        <td>伝達事項を確認してください</td>
                         <td>
                             <form method = "POST">
                                 <input type = "submit" name = "" value = "備考を確認">
@@ -54,7 +60,7 @@
                     <tr>
                         <th>時間</th>
                         <th>名前</th>
-                        <th>備考の有無</th>
+                        <th>伝達事項</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,10 +68,9 @@
                     <tr>
                         <td>11:00</td>
                         <td>〇〇さん</td>
-                        <td>メモ</td>
                         <td>
                             <form method = "POST">
-                                <input type = "submit" name = "" value = "備考を確認">
+                                <input type = "submit" name = "" value = "伝達事項を記入する">
                             </form>
                         </td>
                     </tr>
@@ -75,15 +80,15 @@
         </article>
 
         <nav class = "mypage_button">
-            <p>
-                <a href = "#">自分の予定を確認する</a>
-            </p>
-            <p>
-                <a href = "#">他の職員の予定を確認する</a>
-            </p>
-            <p>
-                <a href = "#">登録情報変更</a>
-            </p>
+            <form>
+                <input type = "submit" name = "" value = "自分の予定を確認する">
+            </form>
+            <form>
+                <input type = "submit" name = "" value = "他の職員の予定を確認する">
+            </form>
+            <form>
+                <input type = "submit" name = "" value = "登録情報変更">
+            </form>
         </nav>
     </main>
 </body>

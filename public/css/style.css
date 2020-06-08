@@ -14,12 +14,15 @@ main{
 
 h1{
     font-size: 3rem;
+    color: #ff0000;
 }
 
 table{
     width: 100%;
     max-width: 640px;
     text-align: center;
+    border: 1px solid #333333;
+    border-collapse: collapse;
 }
 
 a{
@@ -32,7 +35,10 @@ a{
     text-align: center;
 }
 
-.mypage_button p{
+.mypage_button input[type = "submit"]{
+    width: 100%;
+    height: 56px;
+    margin-bottom: 24px;
     box-sizing: border-box;
     border: 1px solid #000000;
 }
