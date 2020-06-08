@@ -1,0 +1,38 @@
+body{
+    margin: 0;
+}
+
+main{
+    margin: 0 auto;
+    width: 95%;
+    max-width: 640px;
+}
+
+.next_visit_info p{
+    font-size: 2.2rem;
+}
+
+h1{
+    font-size: 3rem;
+}
+
+table{
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+}
+
+a{
+    text-decoration: none;
+    color: #000000;
+}
+
+.mypage_button{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.mypage_button p{
+    box-sizing: border-box;
+    border: 1px solid #000000;
+}
