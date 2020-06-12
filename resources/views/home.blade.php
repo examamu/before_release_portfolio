@@ -14,21 +14,24 @@
                         </div>
                     @endif
 
-                    You are logged in!
                 </div>
             </div>
 
             <article class = "panel panel-default">
-                <p class="panel-heading">直近の予定</p>
+                <p class="panel-heading">本日次の予定</p>
                 <section class="panel-body">
-                    <p>10:00</p>
-                    <h1>次は宅です。</h1>
-                    <p>ここに備考欄に記載した内容が入ります。</p>
+@isset($next_schedule->start_time)
+                    <p>{{ $next_schedule->start_time }}</p>
+                    <h1>次は{{ $next_schedule->customer->last_name}}宅です。</h1>
+                    <p>{{ $next_schedule->description }}</p>
+@else
+                    <p>お疲れ様でした！本日の予定は全て終了しています。</p>
+@endisset
                 </section>
             </article>
 
             <article class = "panel panel-default">
-                <p class = "panel-heading">その後の予定</p>
+                <p class = "panel-heading">本日その後の予定</p>
                 <table class = "table">
                     <thead>
                         <tr>

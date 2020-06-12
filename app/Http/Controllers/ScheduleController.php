@@ -14,9 +14,13 @@ class ScheduleController extends Controller
     public function index()
     {
         //scheduleモデルを使用してスケジュール一覧を取得
-        $schedules = \App\schedule::all();
+        $today = date('Y-m-d');
+        $current_time = date('His');
+        $today_schedules = \App\schedule::where('date',$today)->get();
+        $next_schedule = \App\schedule::where('start_time', '>', $current_time)->first();
         return view('home',[
-            'schedules' => $schedules,
+            'schedules' => $today_schedules,
+            'next_schedule' => $next_schedule,
         ]);
     }
 
