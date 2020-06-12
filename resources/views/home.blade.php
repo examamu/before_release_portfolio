@@ -21,8 +21,8 @@
             <article class = "panel panel-default">
                 <p class="panel-heading">直近の予定</p>
                 <section class="panel-body">
-                    <p>10:00〜</p>
-                    <h1>次は〇〇さん宅です。</h1>
+                    <p>10:00</p>
+                    <h1>次は宅です。</h1>
                     <p>ここに備考欄に記載した内容が入ります。</p>
                 </section>
             </article>
@@ -39,18 +39,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!--ループ-->
+@forelse($schedules as $schedule)
                         <tr>
-                            <td>11:00</td>
-                            <td>〇〇さん</td>
-                            <td>伝達事項を確認してください</td>
+                            <td>{{ $schedule->start_time }}</td>
+                            <td>{{ $schedule->customer->last_name }}{{ $schedule->customer->first_name }}さん</td>
+                            <td>{{ $schedule->description }}伝達事項を確認してください</td>
                             <td>
                                 <form method = "POST">
                                     <input type = "submit" name = "" value = "詳細を確認">
                                 </form>
                             </td>
+@empty
+                            <td>本日の予定はありません</td>
                         </tr>
-                        <!--ループ-->
+@endforelse
                     </tbody>
                 </table>
             </article>
