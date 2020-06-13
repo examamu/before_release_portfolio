@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <main class="container">
     <div class="row">
@@ -22,7 +21,7 @@
                 <section class="panel-body">
 @isset($next_schedule->start_time)
                     <p>{{ $next_schedule->start_time }}</p>
-                    <h1>次は{{ $next_schedule->customer->last_name}}宅です。</h1>
+                    <h1>次は{{ $next_schedule->customer->last_name }} {{ $next_schedule->customer->first_name}}さん宅です。</h1>
                     <p>{{ $next_schedule->description }}</p>
 @else
                     <p>お疲れ様でした！本日の予定は全て終了しています。</p>

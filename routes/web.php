@@ -13,6 +13,6 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->middleware('auth')->name('home');
 
-Route::get('/', 'ScheduleController@index');
+Route::get('/', 'ScheduleController@index')->middleware('auth');

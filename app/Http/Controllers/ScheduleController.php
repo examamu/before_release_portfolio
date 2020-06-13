@@ -15,9 +15,9 @@ class ScheduleController extends Controller
     {
         //scheduleモデルを使用してスケジュール一覧を取得
         $today = date('Y-m-d');
-        $current_time = date('His');
-        $today_schedules = \App\schedule::where('date',$today)->get();
-        $next_schedule = \App\schedule::where('start_time', '>', $current_time)->first();
+        $current_time = date('H:i:s');
+        $today_schedules = \App\schedule::where('date',$today)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
+        $next_schedule = \App\schedule::where('start_time', '>=', $current_time)->orderBy('start_time','asc')->first();
         return view('home',[
             'schedules' => $today_schedules,
             'next_schedule' => $next_schedule,
