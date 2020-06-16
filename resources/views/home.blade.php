@@ -20,8 +20,8 @@
                 <p class="panel-heading">本日次の予定</p>
                 <section class="panel-body">
 @isset($next_schedule->start_time)
-                    <p>{{ $next_schedule->start_time }}</p>
-                    <h1>次は{{ $next_schedule->customer->last_name }} {{ $next_schedule->customer->first_name}}さん宅です。</h1>
+                    <p>{{ $next_schedule->cut_seconds($next_schedule->start_time) }}</p>
+                    <h1>次は{{ $next_schedule->customer->name }}さん宅です。</h1>
                     <p>{{ $next_schedule->description }}</p>
 @else
                     <p>お疲れ様でした！本日の予定は全て終了しています。</p>
@@ -43,9 +43,9 @@
                     <tbody>
 @forelse($schedules as $schedule)
                         <tr>
-                            <td>{{ $schedule->start_time }}</td>
-                            <td>{{ $schedule->customer->last_name }}{{ $schedule->customer->first_name }}さん</td>
-                            <td>{{ $schedule->description }}伝達事項を確認してください</td>
+                            <td>{{ $schedule->cut_seconds($schedule->start_time) }}</td>
+                            <td>{{ $schedule->customer->name }}さん</td>
+                            <td>{{ $schedule->description }}</td>
                             <td>
                                 <form method = "POST">
                                     <input type = "submit" name = "" value = "詳細を確認">
@@ -96,11 +96,6 @@
             <form>
                 <div class = "form-group">
                     <input type = "submit" name = "" value = "他の職員の予定を確認する" class = "btn-block">
-                </div>
-            </form>
-            <form>
-                <div class = "form-group">
-                    <input type = "submit" name = "" value = "登録情報変更" class = "btn-block">
                 </div>
             </form>
         </nav>
