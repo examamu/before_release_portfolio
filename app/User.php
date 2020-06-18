@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Staff;
 
 class User extends Authenticatable
 {
     use Notifiable;
 
-
     public function staff()
     {
-        return $this->hasOne('App\staff');
+        return $this->hasOne(Staff::class);
     }
 
     /**

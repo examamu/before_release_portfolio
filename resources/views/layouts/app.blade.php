@@ -60,20 +60,12 @@
                                         <a href="{{ url('admin') }}">
                                             管理者ページ
                                         </a>
-
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
                                     </li>
 
                                     <li>
                                         <a href="{{ url('user') }}">
                                             登録情報変更
                                         </a>
-
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
                                     </li>
 
                                     <li>

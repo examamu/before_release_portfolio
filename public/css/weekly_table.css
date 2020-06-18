@@ -25,10 +25,52 @@
 
 .weekly_array { display: none; }
 
-  .tabContent { display: none; }
+  .tabContent {
+    display: none; 
+  }
+
+  tbody{
+    width: 100%;
+  }
+
+  .tabContent tbody, .tabContent thead{
+    width: 100%;
+  }
+
+  .tabContent tbody tr, .tabContent thead tr{
+    width: 100%;
+  }
+
+  .tabContent tbody tr td, .tabContent tbody tr th{
+    padding: 8px;
+    line-height: 1.6;
+    border-bottom: 1px solid #dddddd;
+  }
+
+.tabContent tbody tr, .tabContent thead th{
+  box-sizing: border-box;
+  padding: 8px;
+}
+
   .active { /* カレント判定 */
     background: #ffffff;
     display : block;
     position : relative;
     z-index : 1;
+  }
+
+  .table_time{
+    width: 18%;
+  }
+
+  .table_customer_name{
+    width: 25%;
+  }
+
+  .table_service_type{
+    width: 32%;
+  }
+
+  .table_staff_name{
+    width: 25%;
   }
