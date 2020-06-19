@@ -118,6 +118,35 @@
         </table>
         
         <h1>利用者管理</h1>
+        <table class = "table">
+            <thead>
+                <tr>
+                    <th>利用者名</th>
+                    <th>要介護度</th>
+                    <th>利用曜日</th>
+                    <th>利用休止</th>
+                </tr>
+            </thead>
+            <tbody>
+@forelse( $customers as $customer)
+                <tr>
+                    <td>{{ $customer->name }}</td>
+                    <td>{{$customer->care_type}}{{ $customer->care_level }}</td>
+                    <td>日月火水木金土</td>
+                    <td>
+                        <form method = "POST">
+                            <input type = "submit" name = "suspension_change" value = "利用→休止">
+                        </form>
+                    </td>
+                </tr>
+@empty
+<tr>
+    <td>利用者がいません</td>
+</tr>
+@endforelse
+            </tbody>
+        </table>
+        <p>※1年間利用がない場合は利用者削除されますのでご注意ください</p>
     </div>
 </main>
 

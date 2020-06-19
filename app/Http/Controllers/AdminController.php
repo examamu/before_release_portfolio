@@ -33,6 +33,14 @@ class AdminController extends Controller
         $serviceTypes = \App\ServiceTypes::All();
         //利用者情報取得
         $customers = \App\Customers::where('status',1)->get();
+        foreach($customers as $customer){
+            if($customer->care_type === 1){
+                $customer->care_type = '要介護';
+            }else{
+                $customer->care_type = '要支援';
+            }
+        }
+
 
         function cut_minutes_seconds($str){
         $word_count = 6;
@@ -46,7 +54,6 @@ class AdminController extends Controller
                 $times[] = sprintf("%02d:%02d\n", $i, $j);
             }
         }
-
 
 
         
