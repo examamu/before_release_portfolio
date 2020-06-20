@@ -11,7 +11,12 @@
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Auth::routes();
 
+Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/', 'ScheduleController@index');
+
+Route::get('/admin', 'AdminController@index');
+
+Route::post('/admin', 'ScheduleController@create');
