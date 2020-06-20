@@ -10,7 +10,7 @@ class schedule extends Model
 
     public function customer()
     {
-       return $this->belongsTo('App\customers');
+       return $this->belongsTo('App\customer');
     }
 
     //start_timeの秒数を表示前に削除

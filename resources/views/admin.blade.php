@@ -130,9 +130,9 @@
             <tbody>
 @forelse( $customers as $customer)
                 <tr>
-                    <td>{{ $customer->name }}</td>
-                    <td>{{$customer->care_type}}{{ $customer->care_level }}</td>
-                    <td>日月火水木金土</td>
+                    <td>{{ $customer->customer->name }}</td>
+                    <td>{{ $customer->customer->care_type }}{{ $customer->customer->care_level }}</td>
+                    <td>{{ $customer->date_of_use }}</td>
                     <td>
                         <form method = "POST">
                             <input type = "submit" name = "suspension_change" value = "利用→休止">
