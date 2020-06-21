@@ -36,23 +36,51 @@ class ScheduleController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * 
+     *
      */
-    public function create()
+    public function create(Request $request)
     {       
         for($i = 0; $i < 7; $i++){
             for($j = 0; $j < 7; $j++){
+
+                if($request->input('post_schedule_customer_name'.$i.$j) === 'no_customer' ){
+                    continue;
+                }
+
+                if($request->input('post_schedule_service_type'.$i.$j) === 'no_service' ){
+                    continue;
+                }
+
+                if($request->input('post_schedule_staff_name'.$i.$j) === 'no_staff' ){
+                    continue;
+                }
+                
                 $schedule_model = new Schedule();
                 $weekly_array = $schedule_model->calendar();
-                $time = trim($_POST['time'.$i.$j]).':00';
-                $customer_name = $_POST['post_schedule_customer_name'.$i.$j];
-                $customer_id = \App\Customers::where('name', $customer_name)->first();
-                $service_type = $_POST['post_schedule_service_type'.$i.$j];
-                $staff_name = $_POST['post_schedule_staff_name'.$i.$j];
-                $staff_id = \App\User::where('name', $staff_name)->first();
-            
-                $schedule_model->customer_id = $customer_id['id'];
-                $schedule_model->user_id = $staff_id['id'];
-                $schedule_model->facility_id = 112;
+
+                //利用時間
+                $time = trim($request->input('time'.$i.$j)).':00';
+
+                //利用者名が送られてくるので利用者IDへ置換
+                $customer_name = $request->input('post_schedule_customer_name'.$i.$j);
+                $customer_data = \App\Customer::where('name', $customer_name)->first();
+
+                //利用種別
+                $service_type_id = $request->input('post_schedule_service_type'.$i.$j);
+
+                //スタッフ名が送られてくるのでスタッフ情報を取得
+                $staff_name = $request->input('post_schedule_staff_name'.$i.$j);
+                $staff_data = \App\User::with('staff')->where('name', $staff_name)->first();
+
+                //施設情報取得
+                $facility_data = \App\Facility::find($staff_data->staff->facility_id)->first();
+
+
+                $schedule_model->customer_id = $customer_data['id'];
+                $schedule_model->user_id = $staff_data['id'];
+                $schedule_model->facility_id = $facility_data['id'];
+                $schedule_model->service_type_id = $service_type_id;
                 $schedule_model->date = $weekly_array[$i];
                 $schedule_model->start_time = $time;
 
