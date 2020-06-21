@@ -2,7 +2,10 @@
 @section('content')
 <main class = "container ">
     <div class = "col-md-8 col-md-offset-2">
-        <h1>訪問スケジュール管理</h1>
+
+
+
+    <h1>訪問スケジュール管理</h1>
         <h2>週間スケジュール</h2>
 
         <form method = "POST">
@@ -34,10 +37,10 @@
                             <td class = "table_customer_name">
                                 <select name = "post_schedule_customer_name{{ $i }}{{ $loop->iteration-1 }}">
             @forelse( $customers as $customer )
-            @if($loop->first)
+                @if($loop->first)
                                     <option value = "no_customer"></option>
                 @endif
-                                    <option value="{{ $customer->name }}">{{ $customer->name }}</option>
+                                    <option value="{{ $customer->customer->name }}">{{ $customer->customer->name }}</option>
             @empty
                                     <option value = "no_customer">no customer</option>     
             @endforelse
@@ -46,9 +49,12 @@
                             <td class = "table_service_type">
                                 <select name = "post_schedule_service_type{{ $i }}{{ $loop->iteration-1 }}">
             @forelse( $serviceTypes as $serviceType )
-                                    <option value = "{{ $serviceType->service_type }}">{{ $serviceType->service_type }}</option>
+                @if($loop->first)
+                                    <option value = "no_service"></option> 
+                @endif
+                                    <option value = "{{ $serviceType->id }}">{{ $serviceType->service_type }}</option>
             @empty
-                                    <option>no service</option> 
+                                    <option value = "no_service">施設の提供サービスが選択されていません</option> 
             @endforelse    
                                 </select>
                             </td>
@@ -56,11 +62,11 @@
                                 <select name = "post_schedule_staff_name{{ $i }}{{ $loop->iteration-1 }}">
             @forelse( $staffs as $staff )
                 @if($loop->first)
-                                    <option value = "no_user"></option>
+                                    <option value = "no_staff"></option>
                 @endif
                                     <option value = "{{ $staff->user->name }}">{{ $staff->user->name }}</option>
             @empty
-                                    <option value = "no_user">no user</option>           
+                                    <option value = "no_staff">no user</option>           
             @endforelse
                                 </select>
                             </td>
@@ -73,6 +79,7 @@
             <input type = "submit" name = "weekly_schedule" value = "予定を確定させる" class = "btn-primary btn-block">
         </form>
         <a href = "#">月間スケジュールはこちらから</a>
+
 
 
         <h1>施設情報管理</h1>
@@ -125,6 +132,7 @@
                     <th>要介護度</th>
                     <th>利用曜日</th>
                     <th>利用休止</th>
+                    <th>利用者情報変更</th>
                 </tr>
             </thead>
             <tbody>
@@ -135,7 +143,12 @@
                     <td>{{ $customer->date_of_use }}</td>
                     <td>
                         <form method = "POST">
-                            <input type = "submit" name = "suspension_change" value = "利用→休止">
+                            <input type = "submit" name = "customer_suspension_update" value = "利用→休止">
+                        </form>
+                    </td>
+                    <td>
+                        <form method = "POST">
+                            <input type = "submit" name = "customer_data_update" value = "利用→休止">
                         </form>
                     </td>
                 </tr>

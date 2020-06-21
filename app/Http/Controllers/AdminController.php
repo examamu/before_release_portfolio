@@ -24,18 +24,27 @@ class AdminController extends Controller
         //認証user_idを取得
         $login_user_data = Auth::user();
         //認証user_idを利用しログインしているstaff情報取得
-        $login_user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
+        $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
         //施設情報取得
-        $facility_data = \App\Facility::find($login_user_data->facility_id)->first();
+        $facility_data = \App\Facility::find($user_data->facility_id)->first();
         //施設で働いているスタッフ情報取得
-        $staffs = \App\Staff::with('user')->where('facility_id',$login_user_data->facility_id)->get();
+        $staffs = \App\Staff::with('user')->where('facility_id',$user_data->facility_id)->get();
         //サービス一覧取得
         $serviceTypes = \App\ServiceType::All();
         //利用者情報取得
-        //
+
+        //利用している利用者を取得
         $active_customers = \App\Customer::where('status',1)->get();
-        $customers = \App\Usage_situation::with('customer')->where('facility_id',$login_user_data->facility_id)->get();
+
+        //施設ごとの利用者を取得
+        $customers = \App\Usage_situation::with('customer')->where('facility_id',$user_data->facility_id)->get();
         
+
+
+
+
+
+        //
         foreach($customers as $customer){
             //取得時になくなった0を取得し直し
             $int = sprintf('%07d',$customer->date_of_use);
@@ -62,6 +71,12 @@ class AdminController extends Controller
                 $customer->customer->care_type = '要支援';
             }
         }
+        //
+
+
+
+
+
 
         //時間の表示を調整
         function cut_minutes_seconds($str){
@@ -76,8 +91,6 @@ class AdminController extends Controller
                 $times[] = sprintf("%02d:%02d\n", $i, $j);
             }
         }
-
-
         
         return view('admin',[
             'customers' => $customers,
@@ -89,5 +102,10 @@ class AdminController extends Controller
             'times' => $times,
             'facility_data' => $facility_data,
         ]);
+
+
+
+
+
     }
 }
