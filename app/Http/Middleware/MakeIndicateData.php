@@ -49,5 +49,4 @@ class MakeIndicateData
     //     }
 
         // return $next($request);
-    }
 }

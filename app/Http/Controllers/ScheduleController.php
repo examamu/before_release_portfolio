@@ -87,6 +87,8 @@ class ScheduleController extends Controller
                 $schedule_model->save();
             }
         }
+
+        return view('admin');
     }
     /**
      * Store a newly created resource in storage.
