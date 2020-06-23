@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Schedule;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {   
@@ -17,6 +16,7 @@ class AdminController extends Controller
     {   
         $schedule_model = new Schedule();
         $data = $schedule_model->get_schedule_data();
+        
         
         return view('admin',[
             'customers' => $data['customers'],

@@ -40,6 +40,20 @@ class schedule extends Model
         //施設情報取得
         $facility_data = \App\Facility::find($user_data->facility_id)->first();
 
+        //今日のスケジュール一覧を表示
+        if(config('const.CURRENT_TIME') >=  $facility_data->closing_hours)
+        {
+            $today_schedules = \App\Schedule::where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
+        }else
+        {
+            $today_schedules = \App\Schedule::where('date',date('Y-m-d',strtotime('+1 day')))->where('facility_id', $user_data->facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
+        }
+        //直近のスケジュールを１件表示
+        $next_schedule = \App\Schedule::where('start_time', '>=', config('const.CURRENT_TIME'))->orderBy('start_time','asc')->first();
+
+        //週間スケジュール取得
+        
+
         //施設で働いているスタッフ情報取得
         $staffs = \App\Staff::with('user')->where('facility_id',$user_data->facility_id)->get();
 
@@ -66,6 +80,8 @@ class schedule extends Model
             'weekly_array' => $weekly_array,
             'times' => $this->times($opening_hours,$closing_hours),
             'facility_data' => $facility_data,
+            'today_schedules' => $today_schedules,
+            'next_schedule' => $next_schedule,
         );
 
         return $var_array;
@@ -117,7 +133,7 @@ class schedule extends Model
     }
 
 
-    private function calendar()
+    public function calendar()
     {
         $y = date('Y');
         $m = date('m');

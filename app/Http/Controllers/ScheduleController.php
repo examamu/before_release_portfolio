@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Schedule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -21,15 +22,7 @@ class ScheduleController extends Controller
 
     public function index()
     {
-        //scheduleモデルを使用してスケジュール一覧を取得
-        $today = date('Y-m-d');
-        $current_time = date('H:i:s');
-        $today_schedules = \App\Schedule::where('date',$today)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
-        $next_schedule = \App\Schedule::where('start_time', '>=', $current_time)->orderBy('start_time','asc')->first();
-        return view('home',[
-            'schedules' => $today_schedules,
-            'next_schedule' => $next_schedule,
-        ]);
+        
     }
 
     /**
@@ -88,7 +81,18 @@ class ScheduleController extends Controller
             }
         }
 
-        return view('admin');
+        $data = $schedule_model->get_schedule_data();
+
+        return view('admin',[
+            'customers' => $data['customers'],
+            'active_customers' => $data['active_customers'],
+            'staffs' => $data['staffs'],
+            'serviceTypes' => $data['serviceTypes'],
+            'week' => config('const.WEEK'),
+            'weekly_array' => $data['weekly_array'],
+            'times' => $data['times'],
+            'facility_data' => $data['facility_data'],
+        ]);
     }
     /**
      * Store a newly created resource in storage.
