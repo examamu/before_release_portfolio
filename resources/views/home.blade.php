@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+
 <main class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -70,17 +71,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!--ループ-->
+@forelse( $today_finish_schedules as $schedule)
                         <tr>
-                            <td>11:00</td>
-                            <td>〇〇さん</td>
+                            <td>{{ $schedule->id }}</td>
+                            <td>{{ $schedule->id }}さん</td>
                             <td>
                                 <form method = "POST">
                                     <input type = "submit" name = "" value = "伝達事項を記入する">
                                 </form>
                             </td>
                         </tr>
-                        <!--ループ-->
+@empty
+                        <tr>
+                            <td>本日終了した予定はありません</td>
+                        </tr>
+@endforelse
                     </tbody>
                 </table>
             </article>

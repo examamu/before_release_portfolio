@@ -13,10 +13,8 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index')->name('home');
-
-Route::get('/', 'ScheduleController@index');
+Route::get('/', 'HomeController@index');
 
 Route::get('/admin', 'AdminController@index');
 
-Route::post('/admin', 'ScheduleController@create');
+Route::post('/admin', 'AdminController@create');
