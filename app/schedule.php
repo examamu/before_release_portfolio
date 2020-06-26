@@ -51,8 +51,8 @@ class schedule extends Model
         //直近のスケジュールを１件表示
         $next_schedule = \App\Schedule::where('start_time', '>=', config('const.CURRENT_TIME'))->orderBy('start_time','asc')->first();
 
-        //週間スケジュール取得
-        
+        //終了スケジュール取得
+        $today_finish_schedules = \App\Schedule_history::where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->get();
 
         //施設で働いているスタッフ情報取得
         $staffs = \App\Staff::with('user')->where('facility_id',$user_data->facility_id)->get();
@@ -71,7 +71,6 @@ class schedule extends Model
         $opening_hours = $this->cut_minutes_seconds($facility_data->opening_hours);
         $closing_hours = $this->cut_minutes_seconds($facility_data->closing_hours);
 
-
         $var_array = array(
             'customers' => $this->customers($customers),
             'active_customers' => $active_customers,
@@ -82,6 +81,7 @@ class schedule extends Model
             'facility_data' => $facility_data,
             'today_schedules' => $today_schedules,
             'next_schedule' => $next_schedule,
+            'today_finish_schedules'=>$today_finish_schedules,
         );
 
         return $var_array;

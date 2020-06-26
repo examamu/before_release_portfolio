@@ -70,7 +70,7 @@ class HomeController extends Controller
             'schedules' => $data['today_schedules'],
             'next_schedule' => $data['next_schedule'],
             'finish_schedules' => $finish_schedules,
-            'aaa' => 'aaa',
+            'today_finish_schedules' => $data['today_finish_schedules'],
         ]);
     }
 }

@@ -7,7 +7,6 @@
 
     <h1>訪問スケジュール管理</h1>
         <h2>週間スケジュール</h2>
-
         <form method = "POST">
     {{ csrf_field() }}
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -30,6 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
+        <!--時間の表示-->
         @foreach( $times as $time )
                         <tr>
                             <th class = "table_time" scope="row">{{ $time }}</th>
@@ -37,6 +37,7 @@
                             <td class = "table_customer_name">
                                 <select name = "post_schedule_customer_name{{ $i }}{{ $loop->iteration-1 }}">
             @forelse( $customers as $customer )
+            <!--時間の表示-->
                 @if($loop->first)
                                     <option value = "no_customer"></option>
                 @endif

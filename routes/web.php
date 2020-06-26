@@ -17,4 +17,4 @@ Route::get('/', 'HomeController@index');
 
 Route::get('/admin', 'AdminController@index');
 
-Route::post('/admin', 'ScheduleController@create');
+Route::post('/admin', 'AdminController@create');
