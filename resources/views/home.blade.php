@@ -73,7 +73,7 @@
                     <tbody>
 @forelse( $today_finish_schedules as $schedule)
                         <tr>
-                            <td>{{ $schedule->id }}</td>
+                            <td>{{ $schedule->start_time }}</td>
                             <td>{{ $schedule->id }}さん</td>
                             <td>
                                 <form method = "POST">
@@ -106,7 +106,5 @@
         </nav>
     </div>
 </main>
-
-
 
 @endsection

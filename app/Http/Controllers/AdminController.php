@@ -29,6 +29,7 @@ class AdminController extends Controller
             'times' => $data['times'],
             'facility_data' => $data['facility_data'],
             'count_date' => count($data['times']),
+            
         ]);
     }
 
