@@ -9,7 +9,18 @@
         <h2>週間スケジュール</h2>
         <form method = "POST">
     {{ csrf_field() }}
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+
+            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper">
+                <ul id="weekTabs">
+                    <li class="ozTab">今週</li>
+                    <li class="ozTab">来週</li>
+                    <li class="ozTab">再来週</li>
+                </ul>
+            </div>
+
+
+            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper" data-toggle="buttons">
                 <ul id="ozTabs">
 @foreach( $week as $data )
                     <li id="t{{ $loop->iteration-1 }}" data-num="{{ $loop->iteration-1 }}" class="ozTab @if($loop->iteration === 1)active @endif">{{ $data }}</li>
@@ -149,7 +160,7 @@
                     </td>
                     <td>
                         <form method = "POST">
-                            <input type = "submit" name = "customer_data_update" value = "利用→休止">
+                            <input type = "submit" name = "customer_data_update" value = "情報を変更する">
                         </form>
                     </td>
                 </tr>

@@ -1,16 +1,31 @@
+#weekTabs {
+  display: flex;
+  list-style : none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.tabs_wrapper{
+  float: none;
+}
+
 #ozTabs { /* タブのコンテナ */
+    width: 100%;
     list-style : none;
     padding : 0;
     margin-bottom: 0;
     overflow : hidden;
+    display: flex;
     }
   .ozTab { /* タブの基本設定 */
-    float : left;
     padding : 5px 10px 3px;
     border-width : 1px;
     border-style : solid;
     border-color : #CCC #CCC #FFF #CCC;
     border-radius : 4px 4px 0 0;
+    flex: 1;
+    text-align: center;
     }
   .ozTab:hover { /* マウスオーバー時の指定 */
     background-color : #EEE;

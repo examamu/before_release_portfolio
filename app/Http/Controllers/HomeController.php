@@ -38,9 +38,14 @@ class HomeController extends Controller
         $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
         $finish_schedules = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $user_data->facility_id)->get(); 
             DB::transaction(function(){
+
+
+                //いる？？
                 $login_user_data = Auth::user();
                 $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
                 $finish_schedules = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $user_data->facility_id)->get();
+                //いる？？
+                
                 foreach($finish_schedules as $finish_schedule)
                 {   
                     DB::table('schedule_histories')->insert([
