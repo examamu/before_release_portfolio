@@ -73,8 +73,8 @@
                     <tbody>
 @forelse( $today_finish_schedules as $schedule)
                         <tr>
-                            <td>{{ $schedule->id }}</td>
-                            <td>{{ $schedule->id }}さん</td>
+                            <td>{{ $schedule->start_time }}</td>
+                            <td>{{ $schedule->customer->name }}さん</td>
                             <td>
                                 <form method = "POST">
                                     <input type = "submit" name = "" value = "伝達事項を記入する">
@@ -106,7 +106,5 @@
         </nav>
     </div>
 </main>
-
-
 
 @endsection

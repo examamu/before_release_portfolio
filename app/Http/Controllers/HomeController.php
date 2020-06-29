@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Schedule_history;
 use App\Schedule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,40 +26,43 @@ class HomeController extends Controller
      */
     public function index()
     {   //認証user_idを取得
+
+        function cut_seconds($str)
+        {
+            $word_count = 3;
+            return substr($str, 0 , strlen($str) - $word_count );
+        }
+
         $login_user_data = Auth::user();
         //認証user_idを利用しログインしているstaff情報取得
         $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
-        $schedule_historys_model = new Schedule_history;
-        
-        $finish_schedules = \App\Schedule::where('date',config('const.TODAY'))->where('start_time', '<', config('const.CURRENT_TIME'))->where('facility_id', $user_data->facility_id);
+        $finish_schedules = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $user_data->facility_id)->get(); 
+            DB::transaction(function(){
 
-        if( isset($finish_schedules) === TRUE )
-        {   
-            DB::beginTransaction();
-            try
-            {
-                foreach($finish_schedules as $data)
-                {
-                    $schedule_historys_model->customer_id = $data['customer_id'];
-                    $schedule_historys_model->user_id = $data['user_id'];
-                    $schedule_historys_model->facility_id = $data['facility_id'];
-                    $schedule_historys_model->service_type_id = $data['service_type_id'];
-                    $schedule_historys_model->date = $data['date'];
-                    $schedule_historys_model->start_time = $data['start_time'];
-                    $schedule_historys_model->description = $data['description'];
 
-                    $schedule_historys_model->save();
-                    
+                //いる？？
+                $login_user_data = Auth::user();
+                $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
+                $finish_schedules = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $user_data->facility_id)->get();
+                //いる？？
+                
+                foreach($finish_schedules as $finish_schedule)
+                {   
+                    DB::table('schedule_histories')->insert([
+                        'customer_id' => $finish_schedule['customer_id'],
+                        'user_id' => $finish_schedule['user_id'],
+                        'facility_id' => $finish_schedule['facility_id'],
+                        'service_type_id' => $finish_schedule['service_type_id'],
+                        'date' => $finish_schedule['date'],
+                        'start_time' => $finish_schedule['start_time'],
+                        'description' => $finish_schedule['description'],
+                    ]);
                 }
-                $finish_schedules->delete();
-
-                DB::commit();
-            } catch(\Exception $e)
-            {
-                DB::rollback();
-                throw $e;
-            }
-        }
+                DB::table('schedules')->where('date',date('Y-m-d'))->
+                where('start_time', '<', date('H:i:s'))->
+                where('facility_id', $user_data->facility_id)->
+                delete();
+            });
         
         //scheduleモデルを使用してスケジュール一覧を取得
         $schedule_model = new Schedule;

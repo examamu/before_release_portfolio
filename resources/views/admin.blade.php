@@ -9,16 +9,27 @@
         <h2>週間スケジュール</h2>
         <form method = "POST">
     {{ csrf_field() }}
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+
+            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper">
+                <ul id="weekTabs">
+                    <li class="ozTab">今週</li>
+                    <li class="ozTab">来週</li>
+                    <li class="ozTab">再来週</li>
+                </ul>
+            </div>
+
+
+            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper" data-toggle="buttons">
                 <ul id="ozTabs">
-    @foreach( $week as $data )
+@foreach( $week as $data )
                     <li id="t{{ $loop->iteration-1 }}" data-num="{{ $loop->iteration-1 }}" class="ozTab @if($loop->iteration === 1)active @endif">{{ $data }}</li>
-    @endforeach
+@endforeach
                 </ul>
             </div>
             <div class = "tabBody ">
 
-    @for( $i = 0; $i <= 6; $i++)<!--1週間ぶんのテーブル出力-->
+@for( $i = 0; $i <= 6; $i++)<!--1週間ぶんのテーブル出力-->
                 <table id="c{{ $i }}" class = "tabContent @if($i === 0)active @endif">
                     <thead>
                         <tr>
@@ -30,52 +41,52 @@
                     </thead>
                     <tbody>
         <!--時間の表示-->
-        @foreach( $times as $time )
+    @foreach( $times as $time )
                         <tr>
                             <th class = "table_time" scope="row">{{ $time }}</th>
                             <input type = "hidden" name = "time{{ $i }}{{ $loop->iteration-1 }}" value = "{{ $time }}">
                             <td class = "table_customer_name">
                                 <select name = "post_schedule_customer_name{{ $i }}{{ $loop->iteration-1 }}">
-            @forelse( $customers as $customer )
+        @forelse( $customers as $customer )
             <!--時間の表示-->
-                @if($loop->first)
+            @if($loop->first)
                                     <option value = "no_customer"></option>
-                @endif
+            @endif
                                     <option value="{{ $customer->customer->name }}">{{ $customer->customer->name }}</option>
-            @empty
+        @empty
                                     <option value = "no_customer">no customer</option>     
-            @endforelse
+        @endforelse
                                 </select>
                             </td>
                             <td class = "table_service_type">
                                 <select name = "post_schedule_service_type{{ $i }}{{ $loop->iteration-1 }}">
-            @forelse( $serviceTypes as $serviceType )
-                @if($loop->first)
+        @forelse( $serviceTypes as $serviceType )
+            @if($loop->first)
                                     <option value = "no_service"></option> 
-                @endif
+            @endif
                                     <option value = "{{ $serviceType->id }}">{{ $serviceType->service_type }}</option>
-            @empty
+        @empty
                                     <option value = "no_service">施設の提供サービスが選択されていません</option> 
-            @endforelse    
+        @endforelse    
                                 </select>
                             </td>
                             <td class = "table_staff_name">
                                 <select name = "post_schedule_staff_name{{ $i }}{{ $loop->iteration-1 }}">
-            @forelse( $staffs as $staff )
-                @if($loop->first)
+        @forelse( $staffs as $staff )
+            @if($loop->first)
                                     <option value = "no_staff"></option>
-                @endif
+            @endif
                                     <option value = "{{ $staff->user->name }}">{{ $staff->user->name }}</option>
-            @empty
+        @empty
                                     <option value = "no_staff">no user</option>           
-            @endforelse
+        @endforelse
                                 </select>
                             </td>
                         </tr>
-        @endforeach
+    @endforeach
                     </tbody>
                 </table>
-    @endfor
+@endfor
             </div>
             <input type = "submit" name = "weekly_schedule" value = "予定を確定させる" class = "btn-primary btn-block">
         </form>
@@ -149,7 +160,7 @@
                     </td>
                     <td>
                         <form method = "POST">
-                            <input type = "submit" name = "customer_data_update" value = "利用→休止">
+                            <input type = "submit" name = "customer_data_update" value = "情報を変更する">
                         </form>
                     </td>
                 </tr>

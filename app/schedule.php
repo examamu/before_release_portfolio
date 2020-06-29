@@ -41,7 +41,7 @@ class schedule extends Model
         $facility_data = \App\Facility::find($user_data->facility_id)->first();
 
         //今日のスケジュール一覧を表示
-        if(config('const.CURRENT_TIME') >=  $facility_data->closing_hours)
+        if(date('H:i:s') >=  $facility_data->closing_hours)
         {
             $today_schedules = \App\Schedule::where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
         }else
@@ -49,10 +49,10 @@ class schedule extends Model
             $today_schedules = \App\Schedule::where('date',date('Y-m-d',strtotime('+1 day')))->where('facility_id', $user_data->facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
         }
         //直近のスケジュールを１件表示
-        $next_schedule = \App\Schedule::where('start_time', '>=', config('const.CURRENT_TIME'))->orderBy('start_time','asc')->first();
+        $next_schedule = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '>=', date('H:i:s'))->orderBy('start_time','asc')->first();
 
         //終了スケジュール取得
-        $today_finish_schedules = \App\Schedule_history::where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->get();
+        $today_finish_schedules = \App\Schedule_history::with('customer')->where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->get();
 
         //施設で働いているスタッフ情報取得
         $staffs = \App\Staff::with('user')->where('facility_id',$user_data->facility_id)->get();
@@ -86,6 +86,7 @@ class schedule extends Model
 
         return $var_array;
     }
+
 
 
     private function times($opening_hours,$closing_hours)
@@ -139,6 +140,7 @@ class schedule extends Model
         $m = date('m');
         $d = date('d');
         $w = date('w');
+        $t = date('t');
 
         if($w > 0){
             $num = -$w;
@@ -147,14 +149,26 @@ class schedule extends Model
         }
         $d = date('d') + $num;
 
+        //今日の日付基準で7日後まで取得
         for($i = $d; $i < $d+7; $i++){
+            //取得した日付が7日以下の場合
             if($i <= 0){
                 $weekly_array[] = date('Y-m-d', mktime(0, 0, 0, $m, 0, $y )) + $i;
 
+            //取得した日付が7日を超過するの場合
             }elseif(checkdate( $m, $i, $y ) === FALSE){
-                $y--;
-                $m--;
-                $weekly_array[] = $y.'-'.$m.'-'.$i - date('t');
+                if($m === 12){
+                    $y++;
+                    $m = 1;
+                }
+                //日付を頭へ戻す
+                $reset_day = $i - $t;
+
+                if($i > date('t') && $reset_day === 1){
+                    $m++;
+                }
+                // $reset_day
+                $weekly_array[] = $y.'-'.$m.'-'.$reset_day;
 
             }else{
                 $weekly_array[] = $y.'-'.$m.'-'.$i;
