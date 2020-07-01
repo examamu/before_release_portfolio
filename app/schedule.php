@@ -138,22 +138,17 @@ class schedule extends Model
     {
         $y = date('Y');
         $m = date('m');
-        $d = date('d');
-        $w = date('w');
+        $w = date('w');//日が0として土が6の数字をふる
         $t = date('t');
 
-        if($w > 0){
-            $num = -$w;
-        }else{
-            $num = $w;
-        }
-        $d = date('d') + $num;
+        //週始まりの日付を取得
+        $d = date('d') - $w;
 
-        //今日の日付基準で7日後まで取得
+        //週始まり起算で日付7日間取得
         for($i = $d; $i < $d+7; $i++){
             //取得した日付が7日以下の場合
             if($i <= 0){
-                $weekly_array[] = date('Y-m-d', mktime(0, 0, 0, $m, 0, $y )) + $i;
+                $weekly_array[] = date('Y-m-d', mktime(0, 0, 0, $m, 0+$i, $y ));
 
             //取得した日付が7日を超過するの場合
             }elseif(checkdate( $m, $i, $y ) === FALSE){
