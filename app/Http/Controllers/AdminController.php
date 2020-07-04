@@ -4,32 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Schedule;
+use App\Calendar;
+use App\ Facility;
+use App\Staff;
+use App\Customer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {   
+
     public function __construct()
     {
         $this->middleware('auth');
-        $this->schedule_model = new Schedule;
     }
 
     public function index()
     {   
-        $schedule_model = new Schedule();
-        $data = $schedule_model->get_schedule_data();
+        $login_user_data = Auth::user();
+        $user_facility_id = Staff::staff_data($login_user_data)->facility_id;
         return view('admin',[
-            'customers' => $data['customers'],
-            'active_customers' => $data['active_customers'],
-            'staffs' => $data['staffs'],
-            'serviceTypes' => $data['serviceTypes'],
+            'customers' => Customer::customers($user_facility_id),
+            'active_customers' => Customer::active_customer($user_facility_id),
+            'staffs' => Staff::all_staff_data($user_facility_id),
+            'serviceTypes' => \App\ServiceType::All(),
             'week' => config('const.WEEK'),
-            'weekly_array' => $data['weekly_array'],
-            'times' => $data['times'],
-            'facility_data' => $data['facility_data'],
-            'count_date' => count($data['times']),
-            
+            'weekly_array' => Calendar::weekly_calendar(),
+            'times' => Calendar::times($user_facility_id),
+            'facility_data' => Facility::facility_data($user_facility_id),
+            'count_date' => count(Calendar::times($user_facility_id)),
+            'get_schedule_data' => Schedule::get_exist_data($user_facility_id),
         ]);
     }
 

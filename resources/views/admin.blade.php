@@ -3,34 +3,34 @@
 <main class = "container ">
     <div class = "col-md-8 col-md-offset-2">
 
-
+@foreach( $get_schedule_data as $data )
+    <p>{{ $data }}</p>
+@endforeach
 
     <h1>訪問スケジュール管理</h1>
         <h2>週間スケジュール</h2>
         <form method = "POST">
     {{ csrf_field() }}
 
-
-            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper">
+            <div class="weekly_toggle">
                 <ul id="weekTabs">
-                    <li class="ozTab">今週</li>
-                    <li class="ozTab">来週</li>
-                    <li class="ozTab">再来週</li>
+                    <li class="ozTab tab_date active">今週</li>
+                    <li class="ozTab tab_date">来週</li>
+                    <li class="ozTab tab_date">再来週</li>
                 </ul>
             </div>
-
-
-            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper" data-toggle="buttons">
+            <div class="date_toggle" data-toggle="buttons">
                 <ul id="ozTabs">
+<!--日〜土を表示-->
 @foreach( $week as $data )
                     <li id="t{{ $loop->iteration-1 }}" data-num="{{ $loop->iteration-1 }}" class="ozTab @if($loop->iteration === 1)active @endif">{{ $data }}</li>
 @endforeach
                 </ul>
             </div>
-            <div class = "tabBody ">
+            <div class = "tabBody">
 
 @for( $i = 0; $i <= 6; $i++)<!--1週間ぶんのテーブル出力-->
-                <table id="c{{ $i }}" class = "tabContent @if($i === 0)active @endif">
+                <table id="c{{ $i }}" class = "col-md-12 tabContent @if($i === 0)active @endif">
                     <thead>
                         <tr>
                             <th id="p{{ $i }}" class = "tbody weekly_array @if($i === 0)active @endif">{{ $weekly_array[$i] }}</th>
@@ -48,7 +48,7 @@
                             <td class = "table_customer_name">
                                 <select name = "post_schedule_customer_name{{ $i }}{{ $loop->iteration-1 }}">
         @forelse( $customers as $customer )
-            <!--時間の表示-->
+            <!--利用者一覧-->
             @if($loop->first)
                                     <option value = "no_customer"></option>
             @endif
