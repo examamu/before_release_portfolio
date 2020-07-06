@@ -12,6 +12,11 @@ class Staff extends Model
         return $this->hasOne('App\User', 'id', 'user_id')->withDefault();
     }
 
+    public function schedule_history()
+    {
+        return $this->hasMany('App\Schedule_history');
+    }
+
     public static function all_staff_data($facility_id){
         $all_staff_data = self::with('user')->where('facility_id', $facility_id)->get();
 

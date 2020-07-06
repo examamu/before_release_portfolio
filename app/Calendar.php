@@ -2,7 +2,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-ini_set('memory_limit', '256M');
+
 class Calendar extends Model
 {   
     public static function weekly_calendar()
@@ -23,6 +23,7 @@ class Calendar extends Model
 
             //取得した日付が7日を超過するの場合
             }elseif(checkdate( $m, $i, $y ) === FALSE){
+                //12月なら一年足して 月を1月追加
                 if($m === 12){
                     $y++;
                     $m = 1;
@@ -30,6 +31,7 @@ class Calendar extends Model
                 //日付を頭へ戻す
                 $reset_day = $i - $t;
 
+                //月末の日付より$iが大きく、頭に戻す数字が１の場合　月を1ふやす
                 if($i > date('t') && $reset_day === 1){
                     $m++;
                 }
@@ -52,7 +54,7 @@ class Calendar extends Model
         for ($i = $opening_hours; $i <= $closing_hours; $i++)
         {
             for ($j = 0; $j <= 30; $j += 30) {
-                $times[] = sprintf("%02d:%02d\n", $i, $j);
+                $times[] = sprintf("%02d:%02d", $i, $j);
             }
         }
         return $times;
@@ -62,12 +64,13 @@ class Calendar extends Model
     public static function cut_seconds($str)
     {
         $word_count = 3;
-        return substr($str, 0 , strlen($str) - $word_count );
+        return substr($str,0, strlen($str) - $word_count );
     }
 
     public static function cut_minutes_seconds($str)
     {
         $word_count = 6;
-        return substr($str, 0 , strlen($str) - $word_count );
+        return substr($str,0, strlen($str) - $word_count );
     }
 }
+

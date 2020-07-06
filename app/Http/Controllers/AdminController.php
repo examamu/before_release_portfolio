@@ -24,6 +24,7 @@ class AdminController extends Controller
         $login_user_data = Auth::user();
         $user_facility_id = Staff::staff_data($login_user_data)->facility_id;
         return view('admin',[
+            'get_weekly_schedules' => Schedule::search_schedule(),
             'customers' => Customer::customers($user_facility_id),
             'active_customers' => Customer::active_customer($user_facility_id),
             'staffs' => Staff::all_staff_data($user_facility_id),
@@ -33,9 +34,14 @@ class AdminController extends Controller
             'times' => Calendar::times($user_facility_id),
             'facility_data' => Facility::facility_data($user_facility_id),
             'count_date' => count(Calendar::times($user_facility_id)),
-            'get_schedule_data' => Schedule::get_exist_data($user_facility_id),
         ]);
     }
+
+
+
+
+
+
 
     public function create(Request $request)
     {   

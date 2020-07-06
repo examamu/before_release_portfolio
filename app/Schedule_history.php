@@ -13,6 +13,11 @@ class Schedule_history extends Model
         return $this->belongsTo('App\customer');
     }
 
+    public function staff()
+    {
+        return $this->belongsTo('App\staff');
+    }
+
     public static function today_schedule_histories($facility_id)
     {
         $today_schedule_histories = self::with('customer')->where('date',config('const.TODAY'))->where('facility_id', $facility_id)->get();
@@ -20,7 +25,7 @@ class Schedule_history extends Model
         return $today_schedule_histories;
     }
     
-    public function insert($finish_schedules)
+    public static function insert($finish_schedules)
     {
         foreach($finish_schedules as $finish_schedule)
         {   

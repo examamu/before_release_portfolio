@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class schedule extends Model
 {   
@@ -23,6 +24,8 @@ class schedule extends Model
     {
         return $this->hasOne('App\ServiceType');
     }
+
+    
 
     public static function get_today_schedules($facility_id)
     {
@@ -45,38 +48,44 @@ class schedule extends Model
         return $finish_schedule;
     }
 
-    public static function get_exist_data($facility_id)
-    {   
-        //営業時間の取得
-        $facility_business_hour = Calendar::times($facility_id);
-        
-        //日付の取得(1週間分)
-        $weekly_calendar = Calendar::weekly_calendar();
-        $i = 0;
-        foreach($weekly_calendar as $date)
+    public static function get_schedule_data($date,$hour){
+        $login_user_data = Auth::user();
+        $facility_id = Staff::staff_data($login_user_data)->facility_id;
+        $schedule_history_data = \App\Schedule_history::where('facility_id', $facility_id)->where('date',$date)->where('start_time',$hour)->first();
+        if(isset($schedule_history_data) === TRUE){
+            $service_type_data = \App\ServiceType::find($schedule_history_data['service_type_id']);
+            $user_data = \App\User::find($schedule_history_data['user_id']);
+            $customer_data = \App\Customer::find($schedule_history_data['customer_id']);
+            $get_weekly_schedule = [
+                'service_type_data' => $service_type_data,
+                'user_data' => $user_data,
+                'customer_data' => $customer_data,
+            ];
+            return $get_weekly_schedule;
+        }
+    }
+
+    public static function search_schedule(){
+        $login_user_data = Auth::user();
+        $facility_id = Staff::staff_data($login_user_data)->facility_id;
+        $weekly_array = Calendar::weekly_calendar();
+        $times = Calendar::times($facility_id);
+        //1週間のループ
+        for ($i = 0; $i <= 6; $i++)
         {
-            foreach($facility_business_hour as $hour)
+            //日付の取得
+            $date = $weekly_array[$i];
+            //営業時間のループ
+            foreach($times as $time)
             {
-                //日付が今日より先かつ時間が今より後の場合
-                if($date < date('Y-m-d') && $hour < date('H:i:s')){
-                    continue;
-                }
-                //スケジュールテーブルから日付と時間で絞り込んで取得
-                // $schedule_exist = \App\Schedule::where('date',$date)->where('start_time',$hour)->get();
-                $get_schedule_array[] = $i;
-                //テーブルからデータを取得していたら
-                //予定が終了している場合
-                // }else
-                // {
-                //     //スケジュールヒストリーテーブルから日付と時間で絞り込んで取得
-                //     $finish_schedule_exist = Schedule_history::where('date',$date)->where('start_time',trim($hour).':00')->get();
-                //     if(isset($finish_schedule_exist) === TRUE)
-                //     {
-                //         $get_schedule_array[$date.$hour] = $finish_schedule_exist;
-                //     }
-                $i ++;
+                
+                //既存の予定の取得
+                $get_weekly_schedule = self::get_schedule_data($date,$time);
+                
+                $schedule[$date][$time] = $get_weekly_schedule;
+
             }
         }
-        return $get_schedule_array;
+        return $schedule;
     }
 }
