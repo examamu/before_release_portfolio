@@ -14,166 +14,94 @@ class schedule extends Model
        return $this->belongsTo('App\customer');
     }
 
-    //start_timeの秒数を表示前に削除
-    public function cut_seconds($str)
+    public function staff()
     {
-        $word_count = 3;
-        return substr($str, 0 , strlen($str) - $word_count );
+        return $this->belongsTo('App\staff');
     }
 
-    private function cut_minutes_seconds($str)
+    public function servicetype()
     {
-        $word_count = 6;
-        return substr($str, 0 , strlen($str) - $word_count );
+        return $this->hasOne('App\ServiceType');
     }
 
-    public function get_schedule_data()
-    {
-        $weekly_array = $this->calendar();
+    
 
-        //認証user_idを取得
+    public static function get_today_schedules($facility_id)
+    {
+        $today_schedules = self::where('date',config('const.TODAY'))->where('facility_id', $facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
+        return $today_schedules;
+    }
+
+    public static function next_schedule($staff_id)
+    {
+        $next_schedule = self::where('user_id', $staff_id)->where('date',date('Y-m-d'))->where('start_time', '>=', date('H:i:s'))->orderBy('start_time','asc')->first();
+        return $next_schedule;
+    }
+
+    public static function finish_schedules($facility_id)
+    {
+        $finish_schedule = self::where('date','<=',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $facility_id)->get(); 
+        return $finish_schedule;
+    }
+
+
+    
+    private static function get_schedule_history_data($date,$hour){
         $login_user_data = Auth::user();
-
-        //認証user_idを利用しログインしているstaff情報取得
-        $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
-
-        //施設情報取得
-        $facility_data = \App\Facility::find($user_data->facility_id)->first();
-
-        //今日のスケジュール一覧を表示
-        if(date('H:i:s') >=  $facility_data->closing_hours)
-        {
-            $today_schedules = \App\Schedule::where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
-        }else
-        {
-            $today_schedules = \App\Schedule::where('date',date('Y-m-d',strtotime('+1 day')))->where('facility_id', $user_data->facility_id)->limit(10)->offset(1)->orderBy('start_time','asc')->get();
+        $facility_id = Staff::staff_data($login_user_data)->facility_id;
+        $schedule_history_data = \App\Schedule_history::where('facility_id', $facility_id)->where('date',$date)->where('start_time',$hour)->first();
+        if(isset($schedule_history_data) === TRUE){
+            $service_type_data = \App\ServiceType::find($schedule_history_data['service_type_id']);
+            $user_data = \App\User::find($schedule_history_data['user_id']);
+            $customer_data = \App\Customer::find($schedule_history_data['customer_id']);
+            $get_weekly_schedule = [
+                'service_type_data' => $service_type_data,
+                'user_data' => $user_data,
+                'customer_data' => $customer_data,
+            ];
+            return $get_weekly_schedule;
         }
-        //直近のスケジュールを１件表示
-        $next_schedule = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '>=', date('H:i:s'))->orderBy('start_time','asc')->first();
-
-        //終了スケジュール取得
-        $today_finish_schedules = \App\Schedule_history::with('customer')->where('date',config('const.TODAY'))->where('facility_id', $user_data->facility_id)->get();
-
-        //施設で働いているスタッフ情報取得
-        $staffs = \App\Staff::with('user')->where('facility_id',$user_data->facility_id)->get();
-
-        //サービス一覧取得
-        $serviceTypes = \App\ServiceType::All();
-
-        //利用者情報取得
-        //施設ごとの利用者を取得
-        $customers = \App\Usage_situation::with('customer')->where('facility_id',$user_data->facility_id)->get();
-
-        //利用している利用者を取得
-        $active_customers = \App\Customer::where('status',1)->get();
-
-        //営業時間取得
-        $opening_hours = $this->cut_minutes_seconds($facility_data->opening_hours);
-        $closing_hours = $this->cut_minutes_seconds($facility_data->closing_hours);
-
-        $var_array = array(
-            'customers' => $this->customers($customers),
-            'active_customers' => $active_customers,
-            'staffs' => $staffs,
-            'serviceTypes' => $serviceTypes,
-            'weekly_array' => $weekly_array,
-            'times' => $this->times($opening_hours,$closing_hours),
-            'facility_data' => $facility_data,
-            'today_schedules' => $today_schedules,
-            'next_schedule' => $next_schedule,
-            'today_finish_schedules'=>$today_finish_schedules,
-        );
-
-        return $var_array;
     }
 
-
-
-    private function times($opening_hours,$closing_hours)
-    {
-        for ($i = $opening_hours; $i <= $closing_hours-1; $i++)
-        {
-            for ($j = 0; $j <= 30; $j += 30) {
-                $times[] = sprintf("%02d:%02d\n", $i, $j);
-            }
+    private static function get_schedule_data($date,$hour){
+        $login_user_data = Auth::user();
+        $facility_id = Staff::staff_data($login_user_data)->facility_id;
+        $schedule_data = \App\Schedule::where('facility_id', $facility_id)->where('date',$date)->where('start_time',$hour)->first();
+        if(isset($schedule_data) === TRUE){
+            $service_type_data = \App\ServiceType::find($schedule_data['service_type_id']);
+            $user_data = \App\User::find($schedule_data['user_id']);
+            $customer_data = \App\Customer::find($schedule_data['customer_id']);
+            $get_weekly_schedule = [
+                'service_type_data' => $service_type_data,
+                'user_data' => $user_data,
+                'customer_data' => $customer_data,
+            ];
+            return $get_weekly_schedule;
         }
-        return $times;
     }
 
-    private function customers($customers)
-    {
-        foreach($customers as $customer){
-            //取得時になくなった0を取得し直し
-            $int = sprintf('%07d',$customer->date_of_use);
-            
-            //一つずつ配列に格納
-            $int_array = str_split($int);
-
-            $i = 0;
-            foreach ( $int_array as $value ){
-            //$customer->data_of_useの曜日の項目の桁が0なら
-                if($value === '1'){
-                    $int_array[$i] = config('const.WEEK')[$i];
+    public static function search_schedule(){
+        $login_user_data = Auth::user();
+        $facility_id = Staff::staff_data($login_user_data)->facility_id;
+        $weekly_array = Calendar::weekly_calendar();
+        $times = Calendar::times($facility_id);
+        //1週間のループ
+        for ($i = 0; $i <= 6; $i++)
+        {
+            //日付の取得
+            $date = $weekly_array[$i];
+            //営業時間のループ
+            foreach($times as $time)
+            {
+                //既存の予定の取得
+                if($date.$time >= date('Y-m-dH:i:s')){
+                    $get_weekly_schedule = self::get_schedule_data($date,$time);
                 }else{
-                    //削除
-                    unset($int_array[$i]);
+                    $get_weekly_schedule = self::get_schedule_history_data($date,$time);
                 }
-                $i++;
+                $schedule[$date][$time] = $get_weekly_schedule;
             }
-            $customer->date_of_use = implode(',', $int_array);
-
-            //利用者の介護度を表示
-            if($customer->customer->care_type === 1){
-                $customer->customer->care_type = '要介護';
-            }else{
-                $customer->customer->care_type = '要支援';
-            }
-
         }
-        return $customers;
-    }
-
-
-    public function calendar()
-    {
-        $y = date('Y');
-        $m = date('m');
-        $d = date('d');
-        $w = date('w');
-        $t = date('t');
-
-        if($w > 0){
-            $num = -$w;
-        }else{
-            $num = $w;
-        }
-        $d = date('d') + $num;
-
-        //今日の日付基準で7日後まで取得
-        for($i = $d; $i < $d+7; $i++){
-            //取得した日付が7日以下の場合
-            if($i <= 0){
-                $weekly_array[] = date('Y-m-d', mktime(0, 0, 0, $m, 0, $y )) + $i;
-
-            //取得した日付が7日を超過するの場合
-            }elseif(checkdate( $m, $i, $y ) === FALSE){
-                if($m === 12){
-                    $y++;
-                    $m = 1;
-                }
-                //日付を頭へ戻す
-                $reset_day = $i - $t;
-
-                if($i > date('t') && $reset_day === 1){
-                    $m++;
-                }
-                // $reset_day
-                $weekly_array[] = $y.'-'.$m.'-'.$reset_day;
-
-            }else{
-                $weekly_array[] = $y.'-'.$m.'-'.$i;
-            }
-        } 
-        return $weekly_array;
+        return $schedule;
     }
 }

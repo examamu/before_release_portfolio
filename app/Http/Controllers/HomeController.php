@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Schedule;
+use App\Schedule_history;
+use App\Staff;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -25,27 +27,19 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   //認証user_idを取得
-
-        function cut_seconds($str)
-        {
-            $word_count = 3;
-            return substr($str, 0 , strlen($str) - $word_count );
-        }
-
+    {   
+        //認証user_idを取得
         $login_user_data = Auth::user();
         //認証user_idを利用しログインしているstaff情報取得
         $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
-        $finish_schedules = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $user_data->facility_id)->get(); 
+        $finish_schedules = Schedule::finish_schedules($user_data->facility_id); 
+        $staff_id = Staff::staff_data($user_data->id);
             DB::transaction(function(){
-
-
-                //いる？？
+                //認証user_idを取得
                 $login_user_data = Auth::user();
+                //認証user_idを利用しログインしているstaff情報取得
                 $user_data = \App\Staff::where('user_id', $login_user_data->id)->first();
-                $finish_schedules = \App\Schedule::where('date',date('Y-m-d'))->where('start_time', '<', date('H:i:s'))->where('facility_id', $user_data->facility_id)->get();
-                //いる？？
-                
+                $finish_schedules = Schedule::finish_schedules($user_data->facility_id); 
                 foreach($finish_schedules as $finish_schedule)
                 {   
                     DB::table('schedule_histories')->insert([
@@ -63,16 +57,11 @@ class HomeController extends Controller
                 where('facility_id', $user_data->facility_id)->
                 delete();
             });
-        
-        //scheduleモデルを使用してスケジュール一覧を取得
-        $schedule_model = new Schedule;
-        $data = $schedule_model->get_schedule_data();
-
         return view('home',[
-            'schedules' => $data['today_schedules'],
-            'next_schedule' => $data['next_schedule'],
+            'schedules' => Schedule::get_today_schedules($user_data->facility_id),
+            'next_schedule' => Schedule::next_schedule($staff_id),
             'finish_schedules' => $finish_schedules,
-            'today_finish_schedules' => $data['today_finish_schedules'],
+            'today_finish_schedules' => Schedule_history::today_schedule_histories($user_data->facility_id),
         ]);
     }
 }

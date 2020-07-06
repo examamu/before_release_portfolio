@@ -2,35 +2,36 @@
 @section('content')
 <main class = "container ">
     <div class = "col-md-8 col-md-offset-2">
-
-
-
     <h1>訪問スケジュール管理</h1>
         <h2>週間スケジュール</h2>
         <form method = "POST">
     {{ csrf_field() }}
-
-
-            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper">
+            <div class="weekly_toggle">
                 <ul id="weekTabs">
-                    <li class="ozTab">今週</li>
-                    <li class="ozTab">来週</li>
-                    <li class="ozTab">再来週</li>
+                    <li class="ozTab tab_date active">今週</li>
+                    <li class="ozTab tab_date">来週</li>
+                    <li class="ozTab tab_date">再来週</li>
                 </ul>
             </div>
 
 
-            <div class="btn-group btn-group-toggle col-md-12 tabs_wrapper" data-toggle="buttons">
+
+            <div class="date_toggle" data-toggle="buttons">
                 <ul id="ozTabs">
+<!--日〜土を表示-->
 @foreach( $week as $data )
-                    <li id="t{{ $loop->iteration-1 }}" data-num="{{ $loop->iteration-1 }}" class="ozTab @if($loop->iteration === 1)active @endif">{{ $data }}</li>
+                    <li id="t{{ $loop->iteration-1 }}" data-num="{{ $loop->iteration-1 }}" class="ozTab @if($loop->iteration === 1)active @endif">{{ $data }}</li>       
 @endforeach
                 </ul>
             </div>
-            <div class = "tabBody ">
 
-@for( $i = 0; $i <= 6; $i++)<!--1週間ぶんのテーブル出力-->
-                <table id="c{{ $i }}" class = "tabContent @if($i === 0)active @endif">
+
+
+
+            <div class = "tabBody">
+
+@for( $i = 0; $i < 7; $i++)<!--1週間ぶんのテーブル出力-->
+                <table id="c{{ $i }}" class = "col-md-12 tabContent @if($i === 0)active @endif">
                     <thead>
                         <tr>
                             <th id="p{{ $i }}" class = "tbody weekly_array @if($i === 0)active @endif">{{ $weekly_array[$i] }}</th>
@@ -48,11 +49,16 @@
                             <td class = "table_customer_name">
                                 <select name = "post_schedule_customer_name{{ $i }}{{ $loop->iteration-1 }}">
         @forelse( $customers as $customer )
-            <!--時間の表示-->
-            @if($loop->first)
+                <!--利用者一覧-->
+                @if($loop->first)              
                                     <option value = "no_customer"></option>
-            @endif
+                @endif
+                <!-- もし取得できていれば-->
+                @if( $get_weekly_schedules[$weekly_array[$i]][$time]['customer_data']['id'] === $customer->customer->id)
+                                    <option value="{{ $customer->customer->name }}" selected>{{ $customer->customer->name }}</option>
+                @else
                                     <option value="{{ $customer->customer->name }}">{{ $customer->customer->name }}</option>
+                @endisset
         @empty
                                     <option value = "no_customer">no customer</option>     
         @endforelse
@@ -64,7 +70,12 @@
             @if($loop->first)
                                     <option value = "no_service"></option> 
             @endif
+
+            @if( $get_weekly_schedules[$weekly_array[$i]][$time]['service_type_data']['id'] === $serviceType->id)
+                                    <option value = "{{ $serviceType->id }}" selected>{{ $serviceType->service_type }}</option>
+            @else
                                     <option value = "{{ $serviceType->id }}">{{ $serviceType->service_type }}</option>
+            @endif
         @empty
                                     <option value = "no_service">施設の提供サービスが選択されていません</option> 
         @endforelse    
@@ -76,7 +87,12 @@
             @if($loop->first)
                                     <option value = "no_staff"></option>
             @endif
+
+            @if( $get_weekly_schedules[$weekly_array[$i]][$time]['user_data']['id'] === $staff->user->id)
+                                    <option value = "{{ $staff->user->name }}" selected>{{ $staff->user->name }}</option>
+            @else
                                     <option value = "{{ $staff->user->name }}">{{ $staff->user->name }}</option>
+            @endif
         @empty
                                     <option value = "no_staff">no user</option>           
         @endforelse
