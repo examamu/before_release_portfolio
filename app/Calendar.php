@@ -19,7 +19,7 @@ class Calendar extends Model
         for($i = $d; $i < $d+7; $i++){
             //取得した日付が7日以下の場合
             if($i <= 0){
-                $weekly_array[] = date('Y-m-d', mktime(0, 0, 0, $m, 0+$i, $y ));
+                $weekly_array[] = date('Y-m-d', mktime(0, 0, 0, $m, $i, $y ));
 
             //取得した日付が7日を超過するの場合
             }elseif(checkdate( $m, $i, $y ) === FALSE){
@@ -36,10 +36,10 @@ class Calendar extends Model
                     $m++;
                 }
                 // $reset_day
-                $weekly_array[] = $y.'-'.$m.'-'.$reset_day;
+                $weekly_array[] = $y.'-'.$m.'-'. sprintf('%02d', $reset_day);
 
             }else{
-                $weekly_array[] = $y.'-'.$m.'-'.$i;
+                $weekly_array[] = $y.'-'.$m.'-'.sprintf('%02d', $i);
             }
         } 
         return $weekly_array;
