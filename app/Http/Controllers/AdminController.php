@@ -8,6 +8,7 @@ use App\Calendar;
 use App\ Facility;
 use App\Staff;
 use App\Customer;
+use App\Schedule_history;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -41,6 +42,7 @@ class AdminController extends Controller
         $login_user_data = Auth::user();
         $user_facility_id = Staff::staff_data($login_user_data)->facility_id;
         $schedule_model = new Schedule;
+        $schedule_history_model = new Schedule_history;
         $times = Calendar::times($user_facility_id);
         $count_date = count($times);
 
@@ -48,7 +50,7 @@ class AdminController extends Controller
             for($j = 0; $j < $count_date; $j++){
 
                 //insertされた利用者名がなければ
-                if($request->input('post_schedule_customer_name'.$i.$j) === 'no_customer' ){
+                if($request->input('post_schedule_customer_id'.$i.$j) === 'no_customer' ){
                     continue;
                 }
                 //insertされたサービスタイプがなければ
@@ -56,38 +58,48 @@ class AdminController extends Controller
                     continue;
                 }
                 //insertされたスタッフ名がなければ
-                if($request->input('post_schedule_staff_name'.$i.$j) === 'no_staff' ){
+                if($request->input('post_schedule_staff_id'.$i.$j) === 'no_staff' ){
                     continue;
                 }
-                
+
+                $schedule_id = $request->input('schedule_id'.$i.$j);
+
                 $weekly_array = Calendar::weekly_calendar();
 
                 //利用時間
                 $time = $request->input('time'.$i.$j).':00';
 
                 //利用者名が送られてくるので利用者IDへ置換
-                $customer_name = $request->input('post_schedule_customer_name'.$i.$j);
-                $customer_data = \App\Customer::where('name', $customer_name)->first();
+                $customer_id = $request->input('post_schedule_customer_id'.$i.$j);
 
                 //利用種別
                 $service_type_id = $request->input('post_schedule_service_type'.$i.$j);
 
                 //スタッフ名が送られてくるのでスタッフ情報を取得
-                $staff_name = $request->input('post_schedule_staff_name'.$i.$j);
-                $staff_data = \App\User::with('staff')->where('name', $staff_name)->first();
+                $staff_id = $request->input('post_schedule_staff_id'.$i.$j);
+                $staff_data = \App\Staff::where('user_id', $staff_id)->first();
 
                 //施設情報取得
-                $facility_data = \App\Facility::find($staff_data->staff->facility_id)->first();
+                $facility_id = \App\Facility::find($staff_data['facility_id'])['id'];
 
+                $insert_data_array = [
+                    'schedule_id' => $schedule_id,
+                    'customer_id' => $customer_id,
+                    'user_id' => $staff_id,
+                    'facility_id'=> $facility_id,
+                    'service_type_id' => $service_type_id,
+                    'date' => $weekly_array[$i],
+                    'start_time' => $time,
+                ];
+                $schedule_history_id = \App\Schedule_history::where('schedule_id',$insert_data_array['schedule_id'])->first()['schedule_id'];
 
-                $schedule_model->customer_id = $customer_data['id'];
-                $schedule_model->user_id = $staff_data['id'];
-                $schedule_model->facility_id = $facility_data['id'];
-                $schedule_model->service_type_id = $service_type_id;
-                $schedule_model->date = $weekly_array[$i];
-                $schedule_model->start_time = $time;
-
-                $schedule_model->save();
+                if(!empty(\App\Schedule_history::where('schedule_id',$schedule_id)->first()) === TRUE)
+                {
+                    $schedule_history_model->update_schedule_history($insert_data_array);
+                }else{
+                    $schedule_model->insert_schedule($insert_data_array);
+                }
+                
             }
         }
         return view('admin',[

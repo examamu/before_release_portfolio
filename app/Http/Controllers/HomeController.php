@@ -43,6 +43,7 @@ class HomeController extends Controller
                 foreach($finish_schedules as $finish_schedule)
                 {   
                     DB::table('schedule_histories')->insert([
+                        'schedule_id' => $finish_schedule['id'],
                         'customer_id' => $finish_schedule['customer_id'],
                         'user_id' => $finish_schedule['user_id'],
                         'facility_id' => $finish_schedule['facility_id'],
