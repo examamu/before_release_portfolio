@@ -13,7 +13,7 @@
 
 .date_toggle{
   padding-top: 24px;
-  background: #CCCCCC;
+  background: #3097D1;
   display: block;
 }
 #ozTabs { /* タブのコンテナ */
@@ -35,6 +35,7 @@
     flex: 1;
     text-align: center;
     box-sizing: border-box;
+    color: #fff;
     }
   .ozTab:hover { /* マウスオーバー時の指定 */
     background-color : #EEE;
@@ -56,6 +57,7 @@
 
   .tab_date{
     background: #CCC;
+    color: #636b6f;
   }
 
   .tabContent tbody, .tabContent thead{
@@ -77,11 +79,20 @@
   padding: 8px;
 }
 
+  .active_week {
+    background: #3097D1;
+    display : block;
+    position : relative;
+    color: #fff;
+    z-index : 1;
+  }
+
   .active { /* カレント判定 */
     background: #ffffff;
     display : block;
     position : relative;
     z-index : 1;
+    color: #636b6f;
   }
 
   .table_time{

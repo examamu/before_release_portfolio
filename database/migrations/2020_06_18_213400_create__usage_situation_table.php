@@ -13,7 +13,7 @@ class CreateUsageSituationTable extends Migration
      */
     public function up()
     {
-        Schema::create('_usage_situation', function (Blueprint $table) {
+        Schema::create('usage_situations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('customer_id');
             $table->integer('facility_id');
@@ -30,6 +30,6 @@ class CreateUsageSituationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('_usage_situation');
+        Schema::dropIfExists('usage_situations');
     }
 }

@@ -45,6 +45,7 @@ class AdminController extends Controller
         $schedule_history_model = new Schedule_history;
         $times = Calendar::times($user_facility_id);
         $count_date = count($times);
+        $err_msg = array();
 
         for($i = 0; $i < 7; $i++){
             for($j = 0; $j < $count_date; $j++){
@@ -62,7 +63,7 @@ class AdminController extends Controller
                     continue;
                 }
 
-                $schedule_id = $request->input('schedule_id'.$i.$j);
+                $post_schedule_id = $request->input('schedule_id'.$i.$j);
 
                 $weekly_array = Calendar::weekly_calendar();
 
@@ -83,7 +84,7 @@ class AdminController extends Controller
                 $facility_id = \App\Facility::find($staff_data['facility_id'])['id'];
 
                 $insert_data_array = [
-                    'schedule_id' => $schedule_id,
+                    'schedule_id' => $post_schedule_id,
                     'customer_id' => $customer_id,
                     'user_id' => $staff_id,
                     'facility_id'=> $facility_id,
@@ -91,18 +92,40 @@ class AdminController extends Controller
                     'date' => $weekly_array[$i],
                     'start_time' => $time,
                 ];
-                $schedule_history_id = \App\Schedule_history::where('schedule_id',$insert_data_array['schedule_id'])->first()['schedule_id'];
+                //スケジュールヒストリーのid取得
+                $schedule_history_data = \App\Schedule_history::where('schedule_id',$post_schedule_id)->first();
+                $schedule_data = \App\Schedule::find($post_schedule_id);
 
-                if(!empty(\App\Schedule_history::where('schedule_id',$schedule_id)->first()) === TRUE)
-                {
-                    $schedule_history_model->update_schedule_history($insert_data_array);
+                //もしスケジュールヒストリーのデータが取得できていれば
+                if(!empty($schedule_history_data['schedule_id']) === TRUE)
+                {   
+                    //ヒストリーの更新メソッドへ流す
+                    try{
+                        $schedule_history_model->update_schedule_history($insert_data_array);
+                    }catch(\Exception $e){
+                        $err_msg[] = '過去のスケジュールデータを更新できませんでした';
+                    }
+                //もしスケジュールヒストリーのデータが入っていなくて
+                //スケジュールデータにデータがあったら
+                }elseif(!empty($schedule_data['id']) === TRUE){
+                    try{
+                        $schedule_model->update_schedule($insert_data_array);
+                    }catch(\Exception $e){
+                        $err_msg[] = 'スケジュールの更新ができませんでした';
+                    }
+                    
                 }else{
-                    $schedule_model->insert_schedule($insert_data_array);
+                    try{
+                        $schedule_model->insert_schedule($insert_data_array);
+                    }catch(\Exception $e){
+                        $err_msg[] = 'スケジュールの新規登録ができませんでした';
+                    }
                 }
                 
             }
         }
         return view('admin',[
+            'err_msg' => $err_msg,
             'get_weekly_schedules' => Schedule::search_schedule(),
             'customers' => Customer::customers($user_facility_id),
             'active_customers' => Customer::active_customer($user_facility_id),

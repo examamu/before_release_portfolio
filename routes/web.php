@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +12,12 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index');
+Route::group(['middleware' => ['auth', 'staff']], function(){
+    Route::get('/', 'HomeController@index');
+});
 
-Route::get('/admin', 'AdminController@index');
+Route::get('/admin', 'AdminController@index')->middleware('auth');
 
 Route::post('/admin', 'AdminController@create');
+
+Route::get('/user', 'UserEditController@index');

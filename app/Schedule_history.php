@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class Schedule_history extends Model
 {   
-
     public function customer()
     {
         return $this->belongsTo('App\customer');
@@ -54,5 +53,17 @@ class Schedule_history extends Model
         $update->start_time = $schedule_data['start_time'];
 
         $update->save();
+    }
+
+    public function insert_schedule_history($schedule_data)
+    {
+        $this->customer_id = $schedule_data['customer_id'];
+        $this->user_id = $schedule_data['user_id'];
+        $this->facility_id = $schedule_data['facility_id'];
+        $this->service_type_id = $schedule_data['service_type_id'];
+        $this->date = $schedule_data['date'];
+        $this->start_time = $schedule_data['start_time'];
+        $this->created_at = date('YmdHis');
+        $this->update_at = date('YmdHis');
     }
 }

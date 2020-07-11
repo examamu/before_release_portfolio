@@ -57,11 +57,13 @@
                                 </a>
 
                                 <ul class="dropdown-menu">
+@if($admin === 1)
                                     <li>
                                         <a href="{{ url('admin') }}">
                                             管理者ページ
                                         </a>
                                     </li>
+@endif
 
                                     <li>
                                         <a href="{{ url('user') }}">

@@ -17,6 +17,9 @@ class CreateSchedulesTable extends Migration
             $table->increments('id');
             $table->integer('customer_id');
             $table->integer('user_id');
+            $table->integer('facility_id');
+            $table->integer('service_type_id');
+            $table->date('date');
             $table->dateTime('start_time');
             $table->text('description');
             $table->timestamps();

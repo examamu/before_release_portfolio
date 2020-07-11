@@ -8,12 +8,19 @@
     {{ csrf_field() }}
             <div class="weekly_toggle">
                 <ul id="weekTabs">
-                    <li class="ozTab tab_date active">今週</li>
+                    <li class="ozTab tab_date active_week">今週</li>
                     <li class="ozTab tab_date">来週</li>
                     <li class="ozTab tab_date">再来週</li>
                 </ul>
             </div>
 
+<!-- エラー表示 -->
+@isset($err_msg)
+    @foreach($err_msg as $err_msg_text)
+        {{ $err_msg_text }}
+    @endforeach
+@endisset
+<!-- エラー表示 -->
 
 
             <div class="date_toggle" data-toggle="buttons">
