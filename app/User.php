@@ -32,4 +32,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public static function update_user_data($staff_data){
+        $update = self::find($staff_data['user_id']);
+        $update->name = $staff_data['name'];
+        $update->email = $staff_data['email'];
+        $update->save();
+    }
 }

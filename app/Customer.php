@@ -27,7 +27,13 @@ class Customer extends Model
     {
         $customers_usage_situation = \App\Usage_situation::with('customer')->where('facility_id',$facility_id)->get();
         $customers = self::change_caretype($customers_usage_situation);
-        return $customers;
+
+        if(isset($customers)){
+            return $customers;
+        }else{
+            return array('利用者はまだ登録されていません');
+        }
+        
     }
 
     public static function change_caretype($customers)
@@ -63,5 +69,15 @@ class Customer extends Model
         return $customers;
     }
 
-    
+    public function insert_customer_data($insert_customer_data){
+
+        $this->name = $insert_customer_data['post_name'];
+        $this->insurer_number = $insert_customer_data['post_nursing_care_level'];
+        $this->nursing_care_level = $insert_customer_data['post_care_level_num'];
+        $this->status = 0;
+
+        $this->save();
+
+        return $this->id;
+    }
 }

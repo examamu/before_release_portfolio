@@ -196,6 +196,8 @@
 @endforelse
             </tbody>
         </table>
+        
+        <a href = "{{ url('/customer') }}">利用者管理ページへ移動</a>
         <p>※1年間利用がない場合は利用者削除されますのでご注意ください</p>
     </div>
 </main>

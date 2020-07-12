@@ -24,6 +24,7 @@ class AdminController extends Controller
         $login_user_data = Auth::user();
         $user_facility_id = Staff::staff_data($login_user_data)->facility_id;
         return view('admin',[
+            'admin' => Staff::staff_data($login_user_data)['admin'],
             'get_weekly_schedules' => Schedule::search_schedule(),
             'customers' => Customer::customers($user_facility_id),
             'active_customers' => Customer::active_customer($user_facility_id),
@@ -124,19 +125,7 @@ class AdminController extends Controller
                 
             }
         }
-        return view('admin',[
-            'err_msg' => $err_msg,
-            'get_weekly_schedules' => Schedule::search_schedule(),
-            'customers' => Customer::customers($user_facility_id),
-            'active_customers' => Customer::active_customer($user_facility_id),
-            'staffs' => Staff::all_staff_data($user_facility_id),
-            'serviceTypes' => \App\ServiceType::All(),
-            'week' => config('const.WEEK'),
-            'weekly_array' => Calendar::weekly_calendar(),
-            'times' => Calendar::times($user_facility_id),
-            'facility_data' => Facility::facility_data($user_facility_id),
-            'count_date' => count(Calendar::times($user_facility_id)),
-        ]);
+        return $this->index();
     }
 
 

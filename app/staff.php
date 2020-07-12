@@ -30,4 +30,13 @@ class Staff extends Model
         return $staff_data;
     }
 
+    public static function update_staff_data($post_data){
+        try{
+            $update = self::find($post_data['staff_id']);
+            $update->facility_id = $post_data['facility_id'];
+            $update->save();
+        }catch(\Exception $e){
+            throw $e;
+        }
+    }
 }
