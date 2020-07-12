@@ -13,7 +13,7 @@ class CreateServiceTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('service_type', function (Blueprint $table) {
+        Schema::create('service_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('facility_type');
             $table->string('service_type');
@@ -30,6 +30,6 @@ class CreateServiceTypeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_type');
+        Schema::dropIfExists('service_types');
     }
 }

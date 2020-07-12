@@ -1,0 +1,48 @@
+.cp_ipcheck {
+	width: 90%;
+	margin: 2em auto;
+	text-align: left;
+}
+.cp_ipcheck ul {
+	margin: 0.5rem 0.5rem 2rem 0.5rem;
+	padding: 1rem 1rem 0.5rem 1rem;
+	list-style: none;
+	border: 1px solid #cccccc;
+}
+.cp_ipcheck .list_item {
+    display: inline-block;
+	margin: 0 0 0.5rem 0;
+	padding: 0;
+}
+.cp_ipcheck label {
+	line-height: 135%;
+	position: relative;
+	margin: 0.5rem;
+	cursor: pointer;
+}
+.cp_ipcheck .option-input07 {
+	position: relative;
+	margin: 0 1rem 0 0;
+	cursor: pointer;
+	outline: none;
+}
+.cp_ipcheck .option-input07:before, .cp_ipcheck .option-input07:after {
+	position: absolute;
+	z-index: 1;
+	width: 1.6rem;
+	height: 1.6rem;
+	content: '';
+	-webkit-transition: all 0.4s ease-in-out;
+	        transition: all 0.4s ease-in-out;
+	border: 2px solid #3097D1;
+	background: #ffffff;
+}
+.cp_ipcheck .option-input07:after {
+	z-index: 0;
+	border: none;
+}
+.cp_ipcheck .option-input07:checked:before {
+	-webkit-transform: rotateY(180deg);
+	        transform: rotateY(180deg);
+	background: #3097D1;
+}

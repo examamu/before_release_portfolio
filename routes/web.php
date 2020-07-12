@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +12,20 @@
 
 Auth::routes();
 
-Route::get('/', 'HomeController@index');
+Route::group(['middleware' => ['auth', 'staff']], function(){
+    Route::get('/', 'HomeController@index');
+});
 
 Route::get('/admin', 'AdminController@index');
 
 Route::post('/admin', 'AdminController@create');
+
+Route::get('/user', 'UserEditController@index');
+
+Route::post('/user', 'UserEditController@update');
+
+Route::group(['middleware' => ['auth', 'staff']], function(){
+    Route::get('/customer', 'CustomerController@index');
+});
+
+Route::post('/customer', 'CustomerController@create');

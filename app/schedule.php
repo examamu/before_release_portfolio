@@ -54,10 +54,12 @@ class schedule extends Model
             $service_type_data = \App\ServiceType::find($schedule_history_data['service_type_id']);
             $user_data = \App\User::find($schedule_history_data['user_id']);
             $customer_data = \App\Customer::find($schedule_history_data['customer_id']);
+            $schedule_id = $schedule_history_data['schedule_id'];
             $get_weekly_schedule = [
                 'service_type_data' => $service_type_data,
                 'user_data' => $user_data,
                 'customer_data' => $customer_data,
+                'schedule_id' => $schedule_id,
             ];
             return $get_weekly_schedule;
         }
@@ -71,10 +73,12 @@ class schedule extends Model
             $service_type_data = \App\ServiceType::find($schedule_data['service_type_id']);
             $user_data = \App\User::find($schedule_data['user_id']);
             $customer_data = \App\Customer::find($schedule_data['customer_id']);
+            $schedule_id = $schedule_data['id'];
             $get_weekly_schedule = [
                 'service_type_data' => $service_type_data,
                 'user_data' => $user_data,
                 'customer_data' => $customer_data,
+                'schedule_id' => $schedule_id,
             ];
             return $get_weekly_schedule;
         }
@@ -103,5 +107,31 @@ class schedule extends Model
             }
         }
         return $schedule;
+    }
+
+    public function insert_schedule($schedule_data)
+    {
+        $this->customer_id = $schedule_data['customer_id'];
+        $this->user_id = $schedule_data['user_id'];
+        $this->facility_id = $schedule_data['facility_id'];
+        $this->service_type_id = $schedule_data['service_type_id'];
+        $this->date = $schedule_data['date'];
+        $this->start_time = $schedule_data['start_time'];
+
+        $this->save();
+    }
+
+    public function update_schedule($schedule_data)
+    {   
+        $update = \App\Schedule::find($schedule_data['schedule_id']);
+        $update->id = $schedule_data['schedule_id'];
+        $update->customer_id = $schedule_data['customer_id'];
+        $update->user_id = $schedule_data['user_id'];
+        $update->facility_id = $schedule_data['facility_id'];
+        $update->service_type_id = $schedule_data['service_type_id'];
+        $update->date = $schedule_data['date'];
+        $update->start_time = $schedule_data['start_time'];
+
+        $update->save();
     }
 }

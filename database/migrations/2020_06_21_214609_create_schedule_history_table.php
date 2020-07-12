@@ -13,8 +13,9 @@ class CreateScheduleHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('schedule_history', function (Blueprint $table) {
+        Schema::create('schedule_histories', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('schedule_id');
             $table->integer('customer_id');
             $table->integer('user_id');
             $table->integer('facility_id');
@@ -33,6 +34,6 @@ class CreateScheduleHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedule_history');
+        Schema::dropIfExists('schedule_histories');
     }
 }

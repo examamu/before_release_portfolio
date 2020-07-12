@@ -8,12 +8,19 @@
     {{ csrf_field() }}
             <div class="weekly_toggle">
                 <ul id="weekTabs">
-                    <li class="ozTab tab_date active">今週</li>
+                    <li class="ozTab tab_date active_week">今週</li>
                     <li class="ozTab tab_date">来週</li>
                     <li class="ozTab tab_date">再来週</li>
                 </ul>
             </div>
 
+<!-- エラー表示 -->
+@isset($err_msg)
+    @foreach($err_msg as $err_msg_text)
+        {{ $err_msg_text }}
+    @endforeach
+@endisset
+<!-- エラー表示 -->
 
 
             <div class="date_toggle" data-toggle="buttons">
@@ -43,11 +50,12 @@
                     <tbody>
         <!--時間の表示-->
     @foreach( $times as $time )
+                        <input type = "hidden" name = "time{{ $i }}{{ $loop->iteration-1 }}" value = "{{ $time }}">
+                        <input type = "hidden" name = "schedule_id{{ $i }}{{ $loop->iteration-1 }}" value ="{{ $get_weekly_schedules[$weekly_array[$i]][$time]['schedule_id'] }}">
                         <tr>
                             <th class = "table_time" scope="row">{{ $time }}</th>
-                            <input type = "hidden" name = "time{{ $i }}{{ $loop->iteration-1 }}" value = "{{ $time }}">
                             <td class = "table_customer_name">
-                                <select name = "post_schedule_customer_name{{ $i }}{{ $loop->iteration-1 }}">
+                                <select name = "post_schedule_customer_id{{ $i }}{{ $loop->iteration-1 }}">
         @forelse( $customers as $customer )
                 <!--利用者一覧-->
                 @if($loop->first)              
@@ -55,15 +63,16 @@
                 @endif
                 <!-- もし取得できていれば-->
                 @if( $get_weekly_schedules[$weekly_array[$i]][$time]['customer_data']['id'] === $customer->customer->id)
-                                    <option value="{{ $customer->customer->name }}" selected>{{ $customer->customer->name }}</option>
+                                    <option value="{{ $customer->customer->id }}" selected>{{ $customer->customer->name }}</option>
                 @else
-                                    <option value="{{ $customer->customer->name }}">{{ $customer->customer->name }}</option>
+                                    <option value="{{ $customer->customer->id }}">{{ $customer->customer->name }}</option>
                 @endisset
         @empty
                                     <option value = "no_customer">no customer</option>     
         @endforelse
                                 </select>
                             </td>
+                            
                             <td class = "table_service_type">
                                 <select name = "post_schedule_service_type{{ $i }}{{ $loop->iteration-1 }}">
         @forelse( $serviceTypes as $serviceType )
@@ -82,16 +91,16 @@
                                 </select>
                             </td>
                             <td class = "table_staff_name">
-                                <select name = "post_schedule_staff_name{{ $i }}{{ $loop->iteration-1 }}">
+                                <select name = "post_schedule_staff_id{{ $i }}{{ $loop->iteration-1 }}">
         @forelse( $staffs as $staff )
             @if($loop->first)
                                     <option value = "no_staff"></option>
             @endif
 
             @if( $get_weekly_schedules[$weekly_array[$i]][$time]['user_data']['id'] === $staff->user->id)
-                                    <option value = "{{ $staff->user->name }}" selected>{{ $staff->user->name }}</option>
+                                    <option value = "{{ $staff->user->id }}" selected>{{ $staff->user->name }}</option>
             @else
-                                    <option value = "{{ $staff->user->name }}">{{ $staff->user->name }}</option>
+                                    <option value = "{{ $staff->user->id }}">{{ $staff->user->name }}</option>
             @endif
         @empty
                                     <option value = "no_staff">no user</option>           
@@ -187,6 +196,8 @@
 @endforelse
             </tbody>
         </table>
+        
+        <a href = "{{ url('/customer') }}">利用者管理ページへ移動</a>
         <p>※1年間利用がない場合は利用者削除されますのでご注意ください</p>
     </div>
 </main>
