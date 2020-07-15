@@ -1,9 +1,20 @@
 @extends('layouts.app')
 @section('content')
-@foreach( $err_msg as $message)
-{{ $message }}
-@endforeach
+
 <main class="container">
+@if(count($errors) > 0)
+    <div>
+        <ul class = "list-group">
+    @foreach ($errors->all() as $error)
+            <li class = "alert alert-danger" role="alert">{{ $error }}</li>
+    @endforeach
+        </ul>
+    </div>
+@elseif($_SERVER['REQUEST_METHOD'] === 'POST')
+        <div class = "alert alert-success">
+            {{ $msg }}
+        </div>
+@endif
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <h1>ユーザー登録情報変更</h1>

@@ -7,7 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
+use App\Http\Requests\CustomerRequest;
 use App\Customer;
 use App\Usage_situation;
 
@@ -18,11 +18,14 @@ class CustomerController extends Controller
         return view('customer',[
             'admin' => 1,
             'week' => config('const.WEEK'),
+            'msg' =>'フォームを入力してください',
         ]);
     }
 
-    public function create(Request $request){
-        
+    public function create(CustomerRequest $request){
+
+
+
         $customer_name = $request->input('customer_name');
         $post_week =  $request->input('post_week');
         $nursing_care_level = $request->input('nursing_care_level');
@@ -45,6 +48,10 @@ class CustomerController extends Controller
             DB::rollBack();
         }
         
-        return $this->index();
+        return view('customer',[
+            'admin' => 1,
+            'week' => config('const.WEEK'),
+            'msg' =>'登録完了しました！',
+        ]);
     }
 }

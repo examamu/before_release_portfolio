@@ -46,7 +46,7 @@ class Schedule_history extends Model
         $update = $this::find($schedule_history_id);
         $update->schedule_id = $schedule_data['schedule_id'];
         $update->customer_id = $schedule_data['customer_id'];
-        $update->user_id = $schedule_data['user_id'];
+        $update->user_id = $schedule_data['staff_id'];
         $update->facility_id = $schedule_data['facility_id'];
         $update->service_type_id = $schedule_data['service_type_id'];
         $update->date = $schedule_data['date'];
@@ -57,13 +57,16 @@ class Schedule_history extends Model
 
     public function insert_schedule_history($schedule_data)
     {
+        $this->schedule_id = $schedule_data['schedule_id'];
         $this->customer_id = $schedule_data['customer_id'];
-        $this->user_id = $schedule_data['user_id'];
+        $this->user_id = $schedule_data['staff_id'];
         $this->facility_id = $schedule_data['facility_id'];
         $this->service_type_id = $schedule_data['service_type_id'];
         $this->date = $schedule_data['date'];
         $this->start_time = $schedule_data['start_time'];
         $this->created_at = date('YmdHis');
         $this->update_at = date('YmdHis');
+
+        $this->save();
     }
 }

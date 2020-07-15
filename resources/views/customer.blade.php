@@ -1,13 +1,19 @@
 @extends('layouts.app')
 @section('content')
-@isset($err_msg)
-@foreach( $err_msg as $message)
-{{ $message }}
-@endforeach
-@endisset
 <main class="container">
     <div class="row">
+    
         <div class="col-md-8 col-md-offset-2">
+@if(count($errors) > 0)
+    @foreach ($errors->all() as $error)
+            <div class = "alert alert-danger" role="alert">{{ $error }}</div>
+    @endforeach
+@elseif($_SERVER['REQUEST_METHOD'] === 'POST')
+
+            <div class = "alert alert-success">
+                {{ $msg }}
+            </div>
+@endif
             <h1>利用者登録追加</h1>
             <form method = "POST">
                 {{ csrf_field() }}
