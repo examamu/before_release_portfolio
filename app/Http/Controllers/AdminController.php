@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {   
+    public $err_msg;
 
     public function __construct()
     {
@@ -24,7 +25,7 @@ class AdminController extends Controller
         $login_user_data = Auth::user();
         $user_facility_id = Staff::staff_data($login_user_data)->facility_id;
 
-        return view('admin',[
+        $value_array = [
             'admin' => Staff::staff_data($login_user_data)['admin'],
             'get_weekly_schedules' => Schedule::search_schedule(),
             'customers' => Customer::customers($user_facility_id),
@@ -37,7 +38,9 @@ class AdminController extends Controller
             'facility_data' => Facility::facility_data($user_facility_id),
             'count_date' => count(Calendar::times($user_facility_id)),
             'msg' => 'フォームを入力してください',
-        ]);
+        ];
+
+        return view('admin',$value_array);
     }
 
 
@@ -124,14 +127,14 @@ class AdminController extends Controller
                     try{
                         $schedule_model->insert_schedule($insert_data_array);
                     }catch(\Exception $e){
-                        $err_msg[] = 'スケジュールの新規登録ができませんでした';
+                        $err_msg[] = 'スケジュールの新規登録ができませんでした'.$e;
                     }
                 }
                 
             }
         }
+
         return $this->index();
     }
-
 
 }
