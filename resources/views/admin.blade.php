@@ -15,11 +15,9 @@
             </div>
 
 <!-- エラー表示 -->
-@isset($err_msg)
-    @foreach($err_msg as $err_msg_text)
-        {{ $err_msg_text }}
-    @endforeach
-@endisset
+@if(count($errors) > 0)
+    <p>入力に問題があります。再入力してください</p>
+@endif
 <!-- エラー表示 -->
 
 
@@ -196,8 +194,7 @@
 @endforelse
             </tbody>
         </table>
-        
-        <a href = "{{ url('/customer') }}">利用者管理ページへ移動</a>
+            <a href = "{{ url('/customer') }}" class = "btn-primary btn-block">利用者管理ページへ移動</a>
         <p>※1年間利用がない場合は利用者削除されますのでご注意ください</p>
     </div>
 </main>

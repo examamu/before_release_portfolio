@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\UserEditRequest;
 use App\Staff;
 use App\User;
 use App\Facility;
@@ -22,7 +23,7 @@ class UserEditController extends Controller
         $facility_data = Facility::where('id', $staff_data['facility_id'])->first();
 
         return view('user_edit',[
-            'err_msg' => $err_msg,
+            'msg' => '変更が完了しました',
             'user_id' => $user_data['id'],
             'user_name' => $user_name,
             'facility_id' => $staff_data['facility_id'],
@@ -32,7 +33,8 @@ class UserEditController extends Controller
         ]);
     }
 
-    public function update(Request $request){
+    public function update(UserEditRequest $request)
+    {
         $post_update_name = $request->input('update_name');
         $post_update_email = $request->input('update_email');
         $post_user_id = $request->input('user_id');

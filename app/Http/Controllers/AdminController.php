@@ -23,6 +23,7 @@ class AdminController extends Controller
     {   
         $login_user_data = Auth::user();
         $user_facility_id = Staff::staff_data($login_user_data)->facility_id;
+
         return view('admin',[
             'admin' => Staff::staff_data($login_user_data)['admin'],
             'get_weekly_schedules' => Schedule::search_schedule(),
@@ -35,8 +36,11 @@ class AdminController extends Controller
             'times' => Calendar::times($user_facility_id),
             'facility_data' => Facility::facility_data($user_facility_id),
             'count_date' => count(Calendar::times($user_facility_id)),
+            'msg' => 'フォームを入力してください',
         ]);
     }
+
+
 
     public function create(Request $request)
     {   
@@ -47,6 +51,7 @@ class AdminController extends Controller
         $times = Calendar::times($user_facility_id);
         $count_date = count($times);
         $err_msg = array();
+
 
         for($i = 0; $i < 7; $i++){
             for($j = 0; $j < $count_date; $j++){
